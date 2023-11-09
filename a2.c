@@ -2,26 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structure for a domestic student
+// Structure for a domestic student.
 typedef struct DomesticStudent
 {
     char firstName[50];
     char lastName[50];
     float gpa;
-    Date dob; // Date of birth
+    Date dob;
 } DomesticStudent;
 
-// Structure for an international student
+// Structure for an international student.
 typedef struct InternationalStudent
 {
     char firstName[50];
     char lastName[50];
     float gpa;
     int toefl;
-    Date dob; // Date of birth
+    Date dob;
 } InternationalStudent;
 
-// Student structure (international or domestic)
+// Student structure (international or domestic).
 typedef struct Student
 {
     char firstName[50];
@@ -57,7 +57,7 @@ Date parseDate(const char *dateStr)
     return date;
 }
 
-// Function to convert month string to number for sorting
+// Convert month string to number for sorting.
 int monthToNumber(const char *month)
 {
     const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -67,10 +67,10 @@ int monthToNumber(const char *month)
         if (strcmp(months[i], month) == 0)
             return i + 1;
     }
-    return -1; // Return -1 if month is not found
+    return -1;
 }
 
-// Helper function to convert month number back to string for output
+// Convert month number back to string for output.
 const char* numberToMonth(int num) {
     const char *months[] = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -78,10 +78,10 @@ const char* numberToMonth(int num) {
     };
     if (num >= 1 && num <= 12)
         return months[num - 1];
-    return NULL; // Return NULL if month number is out of range
+    return NULL;
 }
 
-// Comparator function for sorting
+// Function to compare students for sorting.
 int compareStudents(const void *a, const void *b) {
     const Student *studentA = *(const Student **)a;
     const Student *studentB = *(const Student **)b;
@@ -108,23 +108,22 @@ int compareStudents(const void *a, const void *b) {
     if (firstNameComparison != 0)
         return firstNameComparison;
 
-    // Then by GPA
+    // Then by GPA (higher GPA first)
     if (studentA->gpa != studentB->gpa)
-        return (studentB->gpa - studentA->gpa > 0) ? 1 : -1; // higher GPA comes first
+        return (studentB->gpa - studentA->gpa > 0) ? 1 : -1; 
 
-    // Then by TOEFL score if both students are international
+    // If both students are international, compare by TOEFL score
     if (studentA->type == 'I' && studentB->type == 'I') {
         if (studentA->toefl != studentB->toefl)
-            return studentB->toefl - studentA->toefl; // higher TOEFL comes first
+            return studentB->toefl - studentA->toefl;
     }
 
-    // If one student is domestic and the other is international
+    // If one student is domestic and the other is international, Domestic comes first
     if (studentA->type != studentB->type)
-        return (studentA->type == 'D') ? -1 : 1; // Domestic comes first
+        return (studentA->type == 'D') ? -1 : 1;
 
     return 0; // If all else is equal
 }
-
 
 // Function prototypes.
 Student *readStudentsFromFile(const char *filename);
