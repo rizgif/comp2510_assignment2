@@ -2,14 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structure to hold date information
-typedef struct Date
-{
-    int day;
-    int month;
-    int year;
-} Date;
-
 // Structure for a domestic student
 typedef struct DomesticStudent
 {
@@ -48,7 +40,7 @@ typedef struct StudentNode {
 } StudentNode;
 
 // Structure to hold date information.
-typedef struct
+typedef struct Date
 {
     int day;
     int month;
