@@ -161,6 +161,15 @@ int main(int argc, char *argv[])
 }
 
 // Implement error handling.
-void handleError(const char *errorMessage)
-{
+void handleError(const char *errorMessage) {
+    FILE *file = fopen("output.txt", "w"); // Open output.txt for writing
+    if (file == NULL) {
+        fprintf(stderr, "Error: Unable to open output file\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(file, "Error: %s\n", errorMessage); // Write the error message to output.txt
+    fclose(file); // Close the file
+
+    exit(EXIT_FAILURE); // Exit the program
 }
