@@ -33,7 +33,8 @@ typedef struct Student
 } Student;
 
 // Structure to represent a node in a linked list of students.
-typedef struct StudentNode {
+typedef struct StudentNode
+{
     DomesticStudent *domesticStudent;
     InternationalStudent *internationalStudent;
     struct StudentNode *next;
@@ -71,18 +72,19 @@ int monthToNumber(const char *month)
 }
 
 // Convert month number back to string for output.
-const char* numberToMonth(int num) {
+const char *numberToMonth(int num)
+{
     const char *months[] = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     if (num >= 1 && num <= 12)
         return months[num - 1];
     return NULL;
 }
 
 // Function to compare students for sorting.
-int compareStudents(const void *a, const void *b) {
+int compareStudents(const void *a, const void *b)
+{
     const Student *studentA = *(const Student **)a;
     const Student *studentB = *(const Student **)b;
 
@@ -109,11 +111,13 @@ int compareStudents(const void *a, const void *b) {
         return firstNameComparison;
 
     // Then by GPA (higher GPA first)
-    if (studentA->gpa != studentB->gpa)
-        return (studentB->gpa - studentA->gpa > 0) ? 1 : -1; 
+    double gpaDifference = studentB->gpa - studentA->gpa;
+    if (fabs(gpaDifference) > 0.000001)
+        return (gpaDifference > 0) ? 1 : -1;
 
     // If both students are international, compare by TOEFL score
-    if (studentA->type == 'I' && studentB->type == 'I') {
+    if (studentA->type == 'I' && studentB->type == 'I')
+    {
         if (studentA->toefl != studentB->toefl)
             return studentB->toefl - studentA->toefl;
     }
@@ -135,8 +139,9 @@ void handleError(const char *errorMessage);
 int main(int argc, char *argv[])
 {
 
-     // Check for the correct number of arguments
-    if (argc != 3) {
+    // Check for the correct number of arguments
+    if (argc != 3)
+    {
         fprintf(stderr, "Usage: %s <inputfile> <outputfile>\n", argv[0]);
         return EXIT_FAILURE;
     }
@@ -146,14 +151,16 @@ int main(int argc, char *argv[])
 
     // Read students from the file
     Student *students = readStudentsFromFile(inputFileName);
-    if (students == NULL) {
+    if (students == NULL)
+    {
         handleError("Error reading students from file");
         return EXIT_FAILURE;
     }
 
     char *ANum = "A00874466_A01174802";
     FILE *outputFile = fopen(ANum, "w");
-    if (outputFile == NULL) {
+    if (outputFile == NULL)
+    {
         printf("Failed to create the output file.\n");
         return 1;
     }
@@ -161,15 +168,17 @@ int main(int argc, char *argv[])
 }
 
 // Implement error handling.
-void handleError(const char *errorMessage) {
+void handleError(const char *errorMessage)
+{
     FILE *file = fopen("output.txt", "w"); // Open output.txt for writing
-    if (file == NULL) {
+    if (file == NULL)
+    {
         fprintf(stderr, "Error: Unable to open output file\n");
         exit(EXIT_FAILURE);
     }
 
     fprintf(file, "Error: %s\n", errorMessage); // Write the error message to output.txt
-    fclose(file); // Close the file
+    fclose(file);                               // Close the file
 
     exit(EXIT_FAILURE); // Exit the program
 }
