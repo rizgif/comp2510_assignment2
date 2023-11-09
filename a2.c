@@ -26,7 +26,7 @@ typedef struct Student
 {
     char firstName[50];
     char lastName[50];
-    double gpa;
+    float gpa;
     Date dob;
     int toefl;
     char type; // 'D' for domestic, 'I' for international
