@@ -134,6 +134,30 @@ void handleError(const char *errorMessage);
 // Main function.
 int main(int argc, char *argv[])
 {
+
+     // Check for the correct number of arguments
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <inputfile> <outputfile>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    const char *inputFileName = argv[1];
+    const char *outputFileName = argv[2];
+
+    // Read students from the file
+    Student *students = readStudentsFromFile(inputFileName);
+    if (students == NULL) {
+        handleError("Error reading students from file");
+        return EXIT_FAILURE;
+    }
+
+    char *ANum = "A00874466_";
+    FILE *outputFile = fopen(ANum, "w");
+    if (outputFile == NULL) {
+        printf("Failed to create the output file.\n");
+        return 1;
+    }
+    fclose(outputFile);
 }
 
 // Implement error handling.
