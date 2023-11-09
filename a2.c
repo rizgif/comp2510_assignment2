@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    char *ANum = "A00874466_";
+    char *ANum = "A00874466_A01174802";
     FILE *outputFile = fopen(ANum, "w");
     if (outputFile == NULL) {
         printf("Failed to create the output file.\n");
