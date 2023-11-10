@@ -1,10 +1,9 @@
-Mary Jackson Feb-2-1990 4.00 I 60
-Year OfBirth Feb-2-1991 4.00 I 60
-Month OfBirth Jan-2-1990 4.00 I 60
-Mary Ajackson Feb-2-1990 4.00 I 60
-Amary Ajackson Feb-2-1990 4.00 I 60
-Mary Jackson Feb-2-1990 4.20 I 60
-Mary Jackson Feb-2-1990 4.20 I 70
-Mary Jackson Feb-2-1990 4.20 D
-Valid GPA Feb-2-1990 4.30 I 70
-
+Mary Jackson Feb-2-1990 4.0 I 60
+Year OfBirth Feb-2-1991 4.0 I 60
+Month OfBirth Jan-2-1990 4.0 I 60
+Mary Ajackson Feb-2-1990 4.0 I 60
+Amary Ajackson Feb-2-1990 4.0 I 60
+Mary Jackson Feb-2-1990 4.2 I 60
+Mary Jackson Feb-2-1990 4.2 I 70
+Mary Jackson Feb-2-1990 4.2 D
+Valid GPA Feb-2-1990 4.3 I 70

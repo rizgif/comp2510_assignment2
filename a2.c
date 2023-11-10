@@ -93,58 +93,136 @@ int checkMonthCapital(const char *month, FILE *output)
     return 1;
 }
 
+// Function to get the year of birth for domestic students
+int getDomesticYear(const DomesticStudent *domestic)
+{
+    return domestic->year;
+}
+
+// Function to get the year of birth for international students
+int getInternationalYear(const InternationalStudent *international)
+{
+    return international->year;
+}
+
+// Similarly, create separate functions for other attributes...
+
+// Function to get the year of birth
+int getYear(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? getDomesticYear(&student->student.domestic) : getInternationalYear(&student->student.international);
+}
+
+// Function to get the month of birth
+const char *getMonth(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? student->student.domestic.month : student->student.international.month;
+}
+
+// Function to get the day of birth
+int getDay(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? student->student.domestic.day : student->student.international.day;
+}
+
+// Function to get the last name
+const char *getLastName(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? student->student.domestic.lastName : student->student.international.lastName;
+}
+
+// Function to get the first name
+const char *getFirstName(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? student->student.domestic.firstName : student->student.international.firstName;
+}
+
+// Function to get the GPA
+float getGPA(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? student->student.domestic.gpa : student->student.international.gpa;
+}
+
+// Function to get the TOEFL score (for international students)
+int getTOEFL(const StudentNode *student)
+{
+    return (student->type == INTERNATIONAL) ? student->student.international.toefl : 0; // Assuming default value for domestic students
+}
+
+// Function to check if a student is domestic
+int isDomestic(const StudentNode *student)
+{
+    return (student->type == DOMESTIC) ? 1 : 0;
+}
+
+// Function to check if both students are international
+int areBothInternational(const StudentNode *a, const StudentNode *b)
+{
+    return (a->type == INTERNATIONAL && b->type == INTERNATIONAL) ? 1 : 0;
+}
+
 // Function to compare two students
 int compareStudents(const StudentNode *a, const StudentNode *b)
 {
+    int priorityOrder[] = {
+        // Priority order of attributes
+        0, // Year of birth
+        1, // Month of birth
+        2, // Day of birth
+        3, // Last name
+        4, // First name
+        5, // GPA
+        6, // TOEFL score (for international students)
+        7  // Type (Domestic vs International)
+    };
 
-    // Compare year of birth, earliest comes first
-    int yearA = (a->type == DOMESTIC) ? a->student.domestic.year : a->student.international.year;
-    int yearB = (b->type == DOMESTIC) ? b->student.domestic.year : b->student.international.year;
-    if (yearA != yearB)
-        return yearA - yearB;
-
-    // Compare month of birth, earliest comes first
-    int monthA = monthToNumber((a->type == DOMESTIC) ? a->student.domestic.month : a->student.international.month);
-    int monthB = monthToNumber((b->type == DOMESTIC) ? b->student.domestic.month : b->student.international.month);
-    if (monthA != monthB)
-        return monthA - monthB;
-    // Compare day of birth, earliest comes first
-    int dayA = (a->type == DOMESTIC) ? a->student.domestic.day : a->student.international.day;
-    int dayB = (b->type == DOMESTIC) ? b->student.domestic.day : b->student.international.day;
-    if (dayA != dayB)
-        return dayA - dayB;
-
-    // Compare last name, alphabetical order
-    int lastNameComp = strcmp((a->type == DOMESTIC) ? a->student.domestic.lastName : a->student.international.lastName,
-                              (b->type == DOMESTIC) ? b->student.domestic.lastName : b->student.international.lastName);
-    if (lastNameComp != 0)
-        return lastNameComp;
-
-    // Compare first name, alphbetical order
-    int firstNameComp = strcmp((a->type == DOMESTIC) ? a->student.domestic.firstName : a->student.international.firstName,
-                               (b->type == DOMESTIC) ? b->student.domestic.firstName : b->student.international.firstName);
-    if (firstNameComp != 0)
-        return firstNameComp;
-
-    // Compare GPA, highest comes first
-    float gpaA = (a->type == DOMESTIC) ? a->student.domestic.gpa : a->student.international.gpa;
-    float gpaB = (b->type == DOMESTIC) ? b->student.domestic.gpa : b->student.international.gpa;
-    if (gpaA != gpaB)
-        return (gpaA > gpaB) ? -1 : 1;
-
-    // Compare TOEFL scores, highest comes first
-    if (a->type == INTERNATIONAL && b->type == INTERNATIONAL)
+    for (int i = 0; i < sizeof(priorityOrder) / sizeof(priorityOrder[0]); ++i)
     {
-        if (a->student.international.toefl != b->student.international.toefl)
-            return a->student.international.toefl - b->student.international.toefl;
-    }
+        int result = 0; // Initialize result to consider them equivalent
+        const char *lastNameA, *firstNameA, *lastNameB, *firstNameB;
 
-    // Domestic students come before international students
-    if (a->type != b->type)
-        return (a->type == DOMESTIC) ? -1 : 1;
+        switch (priorityOrder[i])
+        {
+        case 0: // Year of birth
+            result = getYear(a) - getYear(b);
+            break;
+        case 1: // Month of birth
+            result = monthToNumber(getMonth(a)) - monthToNumber(getMonth(b));
+            break;
+        case 2: // Day of birth
+            result = getDay(a) - getDay(b);
+            break;
+        case 3: // Last name
+            lastNameA = getLastName(a);
+            lastNameB = getLastName(b);
+            result = strcmp(lastNameA, lastNameB);
+            break;
+        case 4: // First name
+            firstNameA = getFirstName(a);
+            firstNameB = getFirstName(b);
+            result = strcmp(firstNameA, firstNameB);
+            break;
+        case 5: // GPA
+            result = getGPA(a) - getGPA(b);
+            break;
+        case 6: // TOEFL score (for international students)
+            if (areBothInternational(a, b))
+            {
+                result = getTOEFL(a) - getTOEFL(b);
+            }
+            break;
+        case 7: // Type (Domestic vs International)
+            result = isDomestic(a) ? -1 : 1;
+            break;
+        }
+
+        if (result != 0)
+            return result; // If the current attribute is enough to determine the order, return the result
+    }
 
     return 0; // If all else is equal, consider them equivalent
 }
+
 
 // Function to read students from a file and create a linked list
 StudentNode *readStudentsFromFile(const char *filename)
