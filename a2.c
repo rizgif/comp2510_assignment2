@@ -183,11 +183,7 @@ StudentNode *readStudentsFromFile(const char *filename)
         // Convert typeChar to StudentType
         type = (typeChar == 'D') ? DOMESTIC : (typeChar == 'I') ? INTERNATIONAL : -1;
         
-        // Check for extra data beyond the expected fields
-        if (line[endPosition] != '\0' && line[endPosition] != '\n') {
-            handleError("Error: Extra data found in student record");
-            continue;
-        }
+    
 
 
         // Check if Student has correct number of fields (more than 6)
