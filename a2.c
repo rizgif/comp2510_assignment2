@@ -12,23 +12,23 @@ typedef struct DomesticStudent
 {
     char firstName[50];
     char lastName[50];
+    char month[4];
+    int day;
+    int year;
     float gpa;
     char status;
-    int day;
-    char month[4];
-    int year;
 } DomesticStudent;
 
 typedef struct InternationalStudent
 {
     char firstName[50];
     char lastName[50];
+    char month[4];
+    int day;
+    int year;
     float gpa;
     char status;
     int toefl;
-    int day;
-    char month[4];
-    int year;
 } InternationalStudent;
 
 // Structure to represent a node in a linked list of students.
@@ -42,6 +42,22 @@ typedef struct StudentNode
     } student;
     struct StudentNode *next;
 } StudentNode;
+
+// Function to handle errors by writing to an output file and exiting.
+void handleError(const char *errorMessage)
+{
+    FILE *errorFile = fopen("output.txt", "w"); // Open a file for writing errors.
+    if (errorFile == NULL)
+    {
+        fprintf(stderr, "Error: Unable to open error output file\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(errorFile, "%s\n", errorMessage); // Write the error message to the file.
+    fclose(errorFile);                        // Close the file.
+
+    exit(EXIT_FAILURE); // Exit the program.
+}
 
 int monthToNumber(const char *month)
 {
@@ -159,7 +175,7 @@ StudentNode *readStudentsFromFile(const char *filename)
         type = (typeChar == 'D') ? DOMESTIC : INTERNATIONAL;
 
         // Check if Student has correct number of fields (more than 6)
-        if (scanned < 6)
+        if (scanned < 7)
         {
             handleError("Error: Incomplete student record found");
             continue;
@@ -173,7 +189,7 @@ StudentNode *readStudentsFromFile(const char *filename)
             continue;
         }
 
-        // Check is GPA is a valif value
+        // Check is GPA is a valid value
         if (gpa < 0.0 || gpa > 4.3)
         {
             handleError("Error: GPA out of valid range (0.0 to 4.3)");
@@ -195,14 +211,14 @@ StudentNode *readStudentsFromFile(const char *filename)
         }
 
         // Check if the number of fields is correct for domestic student
-        if (type == DOMESTIC && scanned != 6)
+        if (type == DOMESTIC && scanned != 7)
         {
             handleError("Error: Incorrect record for domestic student");
             continue;
         }
 
         // Check if the number of fields is correct for international student
-        if (type == INTERNATIONAL && scanned != 7)
+        if (type == INTERNATIONAL && scanned != 8)
         {
             handleError("Error: Incorrect record for international student");
             continue;
@@ -227,6 +243,7 @@ StudentNode *readStudentsFromFile(const char *filename)
             newNode->student.domestic.day = day;
             strcpy(newNode->student.domestic.month, month);
             newNode->student.domestic.year = year;
+            newNode->student.domestic.status = typeChar;
         }
         else if (type == INTERNATIONAL)
         {
@@ -238,6 +255,7 @@ StudentNode *readStudentsFromFile(const char *filename)
             newNode->student.international.day = day;
             strcpy(newNode->student.international.month, month);
             newNode->student.international.year = year;
+            newNode->student.international.status = typeChar;
         }
         else
         {
@@ -263,48 +281,142 @@ StudentNode *readStudentsFromFile(const char *filename)
     return head;
 }
 
-// Function to handle errors by writing to an output file and exiting.
-void handleError(const char *errorMessage)
+StudentNode *mergeSort(StudentNode *head, int (*comparator)(StudentNode *, StudentNode *));
+
+void writeStudentsToFile(const char *filename, StudentNode *students, char option)
 {
-    FILE *errorFile = fopen("output.txt", "w"); // Open a file for writing errors.
-    if (errorFile == NULL)
+    FILE *file = fopen(filename, "w");
+    if (!file)
     {
-        fprintf(stderr, "Error: Unable to open error output file\n");
-        exit(EXIT_FAILURE);
+        handleError("Error opening output file");
+        return;
     }
 
-    fprintf(errorFile, "%s\n", errorMessage); // Write the error message to the file.
-    fclose(errorFile);                        // Close the file.
+    // Loop through the linked list of students
+    while (students != NULL)
+    {
+        // Check the option and filter accordingly
+        switch (option)
+        {
+        case 'D':
+            // Write only domestic students
+            if (students->type == DOMESTIC)
+            {
+                fprintf(file, "%s %s %s %d %d %.2f %c\n",
+                        students->student.domestic.firstName,
+                        students->student.domestic.lastName,
+                        students->student.domestic.month,
+                        students->student.domestic.day,
+                        students->student.domestic.year,
+                        students->student.domestic.gpa,
+                        students->student.domestic.status);
+            }
+            break;
+        case 'I':
+            // Write only international students
+            if (students->type == INTERNATIONAL)
+            {
+                fprintf(file, "%s %s %s %d %d %.2f %c %d\n",
+                        students->student.international.firstName,
+                        students->student.international.lastName,
+                        students->student.international.month,
+                        students->student.international.day,
+                        students->student.international.year,
+                        students->student.international.gpa,
+                        students->student.international.status,
+                        students->student.international.toefl);
+            }
+            break;
+        case 'A':
+            // Write all students
+            if (students->type == DOMESTIC)
+            {
+                fprintf(file, "%s %s %s %d %d %.2f %c\n",
+                        students->student.domestic.firstName,
+                        students->student.domestic.lastName,
+                        students->student.domestic.month,
+                        students->student.domestic.day,
+                        students->student.domestic.year,
+                        students->student.domestic.gpa,
+                        students->student.domestic.status);
+            } else if (students->type == INTERNATIONAL)
+            {
+                fprintf(file, "%s %s %s %d %d %.2f %c %d\n",
+                        students->student.international.firstName,
+                        students->student.international.lastName,
+                        students->student.international.month,
+                        students->student.international.day,
+                        students->student.international.year,
+                        students->student.international.gpa,
+                        students->student.international.status,
+                        students->student.international.toefl);
+            }
+            break;
+        default:
+            fprintf(stderr, "Invalid option: %c\n", option);
+            break;
+        }
 
-    exit(EXIT_FAILURE); // Exit the program.
+        // Move to the next node in the linked list
+        students = students->next;
+    }
+
+    fclose(file);
 }
 
-Student *mergeSort(Student *head, int (*comparator)(Student *, Student *));
-void writeStudentsToFile(const char *filename, Student *students, char option);
 
-// Main function.
 int main(int argc, char *argv[])
 {
-
     // Check for the correct number of arguments
-    if (argc != 3)
+    if (argc != 4)
     {
-        fprintf(stderr, "Usage: %s <inputfile> <outputfile>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <inputfile> <outputfile> <option>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     const char *inputFileName = argv[1];
     const char *outputFileName = argv[2];
+    int option = atoi(argv[3]); // Convert option to an integer
 
     // Read students from the file
-    Student *students = readStudentsFromFile(inputFileName);
+    StudentNode *students = readStudentsFromFile(inputFileName);
+
+    // Check if the file was successfully read
     if (students == NULL)
     {
         handleError("Error reading students from file");
         return EXIT_FAILURE;
     }
 
-    char *ANum = "A00874466_A01174802";
+    // Write students to the output file based on the specified option
+    switch (option)
+    {
+    case 1:
+        writeStudentsToFile(outputFileName, students, 'D');
+        break;
+    case 2:
+        writeStudentsToFile(outputFileName, students, 'I');
+        break;
+    case 3:
+        writeStudentsToFile(outputFileName, students, 'A');
+        break;
+    default:
+        fprintf(stderr, "Invalid option: %d\n", option);
+        break;
+    }
+
+    // Free the allocated memory for the linked list
+    StudentNode *current = students;
+    while (current != NULL)
+    {
+        StudentNode *temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    return EXIT_SUCCESS;
+
+    char *ANum = "A00874466_A01174802_A01357980";
     FILE *outputFile = fopen(ANum, "w");
     if (outputFile == NULL)
     {
@@ -314,18 +426,4 @@ int main(int argc, char *argv[])
     fclose(outputFile);
 }
 
-// Implement error handling.
-void handleError(const char *errorMessage)
-{
-    FILE *file = fopen("output.txt", "w"); // Open output.txt for writing
-    if (file == NULL)
-    {
-        fprintf(stderr, "Error: Unable to open output file\n");
-        exit(EXIT_FAILURE);
-    }
 
-    fprintf(file, "Error: %s\n", errorMessage); // Write the error message to output.txt
-    fclose(file);                               // Close the file
-
-    exit(EXIT_FAILURE); // Exit the program
-}
