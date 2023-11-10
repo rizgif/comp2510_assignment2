@@ -167,10 +167,18 @@ StudentNode *readStudentsFromFile(const char *filename)
         float gpa;
         char typeChar;
         StudentType type;
+        int endPosition = 0;
+
 
         // Parse the line
-        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %f %c %d",
-                             firstName, lastName, month, &day, &year, &gpa, &typeChar, &toefl);
+        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %f %c %d%n",
+                         firstName, lastName, month, &day, &year, &gpa, &typeChar, &toefl, &endPosition);
+        
+        // Check for extra data beyond the expected fields
+        if (line[endPosition] != '\0' && line[endPosition] != '\n') {
+            handleError("Error: Extra data found in student record");
+            continue;
+        }
 
         type = (typeChar == 'D') ? DOMESTIC : INTERNATIONAL;
 
