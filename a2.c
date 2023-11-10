@@ -177,8 +177,8 @@ StudentNode *readStudentsFromFile(const char *filename)
 
 
         // Parse the line
-        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %f %c %d%n",
-                         firstName, lastName, month, &day, &year, &gpa, &typeChar, &toefl, &endPosition);
+        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %9s %c %d",
+        firstName, lastName, month, &day, &year, gpaStr, &typeChar, &toefl);
 
         // Convert typeChar to StudentType
         type = (typeChar == 'D') ? DOMESTIC : (typeChar == 'I') ? INTERNATIONAL : -1;
