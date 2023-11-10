@@ -175,6 +175,8 @@ StudentNode *readStudentsFromFile(const char *filename)
         int scanned, tokenCount = 0;
         char *token, buffer[200];
         char extraChar;
+        int isValidDate = 1;
+        int maxDay = 31;
 
         strcpy(buffer, line);
         token = strtok(buffer, " \t\n");
@@ -213,6 +215,28 @@ StudentNode *readStudentsFromFile(const char *filename)
         {
             handleError("Error: GPA out of valid range (0.0 to 4.3)");
             continue;
+        }
+
+        // Change max day depending on
+        if (monthNumber == 4 || monthNumber == 6 || monthNumber == 9 || monthNumber == 11)
+        {
+            maxDay = 30;
+        }
+        else if (monthNumber == 2)
+        {
+            maxDay = 28;
+        }
+
+        // Validate the day
+        if (day < 1 || day > maxDay)
+        {
+            isValidDate = 0;
+            handleError("Error: Invalid day for the given month");
+        }
+
+        if (!isValidDate)
+        {
+            continue; // Skip this record if the date is invalid
         }
 
         // Check if year is a valid value
