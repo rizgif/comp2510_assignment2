@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 typedef enum
 {
@@ -282,7 +281,63 @@ StudentNode *readStudentsFromFile(const char *filename)
     return head;
 }
 
-StudentNode *mergeSort(StudentNode *head, int (*comparator)(StudentNode *, StudentNode *));
+// Function to find the middle of the linked list
+StudentNode *findMiddle(StudentNode *head) {
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+
+    StudentNode *slow = head;
+    StudentNode *fast = head->next;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow;
+}
+
+// Function to merge two sorted linked lists
+StudentNode *mergeLists(StudentNode *a, StudentNode *b) {
+    if (a == NULL) {
+        return b;
+    }
+
+    if (b == NULL) {
+        return a;
+    }
+
+    if (compareStudents(a, b) <= 0) {
+        a->next = mergeLists(a->next, b);
+        return a;
+    } else {
+        b->next = mergeLists(a, b->next);
+        return b;
+    }
+}
+
+// Function to perform merge sort on a linked list
+void mergeSort(StudentNode **headRef) {
+    StudentNode *head = *headRef;
+    if (head == NULL || head->next == NULL) {
+        return;
+    }
+
+    // Find the middle of the list
+    StudentNode *mid = findMiddle(head);
+    StudentNode *midNext = mid->next;
+
+    // Split the list into two halves
+    mid->next = NULL;
+
+    // Recursively sort the two halves
+    mergeSort(&head);
+    mergeSort(&midNext);
+
+    // Merge the sorted halves
+    *headRef = mergeLists(head, midNext);
+}
 
 void writeStudentsToFile(const char *filename, StudentNode *students, char option)
 {
@@ -389,6 +444,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    // Sort the students using merge sort
+    mergeSort(&students);
+
     // Write students to the output file based on the specified option
     switch (option)
     {
@@ -415,8 +473,6 @@ int main(int argc, char *argv[])
         free(temp);
     }
 
-    return EXIT_SUCCESS;
-
     char *ANum = "A00874466_A01174802_A01357980";
     FILE *outputFile = fopen(ANum, "w");
     if (outputFile == NULL)
@@ -425,6 +481,8 @@ int main(int argc, char *argv[])
         return 1;
     }
     fclose(outputFile);
+
+    return EXIT_SUCCESS;
 }
 
 
