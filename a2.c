@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 typedef enum
 {
@@ -16,7 +15,7 @@ typedef struct DomesticStudent
     char month[4];
     int day;
     int year;
-    float gpa;
+    char gpaStr[10]; // Change gpa to gpaStr
     char status;
 } DomesticStudent;
 
@@ -27,10 +26,11 @@ typedef struct InternationalStudent
     char month[4];
     int day;
     int year;
-    float gpa;
+    char gpaStr[10]; // Change gpa to gpaStr
     char status;
     int toefl;
 } InternationalStudent;
+
 
 // Structure to represent a node in a linked list of students.
 typedef struct StudentNode
@@ -93,136 +93,63 @@ int checkMonthCapital(const char *month, FILE *output)
     return 1;
 }
 
-// Function to get the year of birth for domestic students
-int getDomesticYear(const DomesticStudent *domestic)
-{
-    return domestic->year;
-}
-
-// Function to get the year of birth for international students
-int getInternationalYear(const InternationalStudent *international)
-{
-    return international->year;
-}
-
-// Similarly, create separate functions for other attributes...
-
-// Function to get the year of birth
-int getYear(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? getDomesticYear(&student->student.domestic) : getInternationalYear(&student->student.international);
-}
-
-// Function to get the month of birth
-const char *getMonth(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? student->student.domestic.month : student->student.international.month;
-}
-
-// Function to get the day of birth
-int getDay(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? student->student.domestic.day : student->student.international.day;
-}
-
-// Function to get the last name
-const char *getLastName(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? student->student.domestic.lastName : student->student.international.lastName;
-}
-
-// Function to get the first name
-const char *getFirstName(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? student->student.domestic.firstName : student->student.international.firstName;
-}
-
-// Function to get the GPA
-float getGPA(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? student->student.domestic.gpa : student->student.international.gpa;
-}
-
-// Function to get the TOEFL score (for international students)
-int getTOEFL(const StudentNode *student)
-{
-    return (student->type == INTERNATIONAL) ? student->student.international.toefl : 0; // Assuming default value for domestic students
-}
-
-// Function to check if a student is domestic
-int isDomestic(const StudentNode *student)
-{
-    return (student->type == DOMESTIC) ? 1 : 0;
-}
-
-// Function to check if both students are international
-int areBothInternational(const StudentNode *a, const StudentNode *b)
-{
-    return (a->type == INTERNATIONAL && b->type == INTERNATIONAL) ? 1 : 0;
-}
-
 // Function to compare two students
 int compareStudents(const StudentNode *a, const StudentNode *b)
 {
-    int priorityOrder[] = {
-        // Priority order of attributes
-        0, // Year of birth
-        1, // Month of birth
-        2, // Day of birth
-        3, // Last name
-        4, // First name
-        5, // GPA
-        6, // TOEFL score (for international students)
-        7  // Type (Domestic vs International)
-    };
 
-    for (int i = 0; i < sizeof(priorityOrder) / sizeof(priorityOrder[0]); ++i)
+    // Compare year of birth, earliest comes first
+    int yearA = (a->type == DOMESTIC) ? a->student.domestic.year : a->student.international.year;
+    int yearB = (b->type == DOMESTIC) ? b->student.domestic.year : b->student.international.year;
+    if (yearA != yearB)
+        return yearA - yearB;
+
+    // Compare month of birth, earliest comes first
+    int monthA = monthToNumber((a->type == DOMESTIC) ? a->student.domestic.month : a->student.international.month);
+    int monthB = monthToNumber((b->type == DOMESTIC) ? b->student.domestic.month : b->student.international.month);
+    if (monthA != monthB)
+        return monthA - monthB;
+    // Compare day of birth, earliest comes first
+    int dayA = (a->type == DOMESTIC) ? a->student.domestic.day : a->student.international.day;
+    int dayB = (b->type == DOMESTIC) ? b->student.domestic.day : b->student.international.day;
+    if (dayA != dayB)
+        return dayA - dayB;
+
+    // Compare last name, alphabetical order
+    int lastNameComp = strcmp((a->type == DOMESTIC) ? a->student.domestic.lastName : a->student.international.lastName,
+                              (b->type == DOMESTIC) ? b->student.domestic.lastName : b->student.international.lastName);
+    if (lastNameComp != 0)
+        return lastNameComp;
+
+    // Compare first name, alphbetical order
+    int firstNameComp = strcmp((a->type == DOMESTIC) ? a->student.domestic.firstName : a->student.international.firstName,
+                               (b->type == DOMESTIC) ? b->student.domestic.firstName : b->student.international.firstName);
+    if (firstNameComp != 0)
+        return firstNameComp;
+
+    // Compare GPA, highest comes first
+    const char *gpaStrA = (a->type == DOMESTIC) ? a->student.domestic.gpaStr : a->student.international.gpaStr;
+    const char *gpaStrB = (b->type == DOMESTIC) ? b->student.domestic.gpaStr : b->student.international.gpaStr;
+
+    float gpaA = atof(gpaStrA);
+    float gpaB = atof(gpaStrB);
+
+    if (gpaA != gpaB)
+        return (gpaA > gpaB) ? -1 : 1;
+
+
+    // Compare TOEFL scores, highest comes first
+    if (a->type == INTERNATIONAL && b->type == INTERNATIONAL)
     {
-        int result = 0; // Initialize result to consider them equivalent
-        const char *lastNameA, *firstNameA, *lastNameB, *firstNameB;
-
-        switch (priorityOrder[i])
-        {
-        case 0: // Year of birth
-            result = getYear(a) - getYear(b);
-            break;
-        case 1: // Month of birth
-            result = monthToNumber(getMonth(a)) - monthToNumber(getMonth(b));
-            break;
-        case 2: // Day of birth
-            result = getDay(a) - getDay(b);
-            break;
-        case 3: // Last name
-            lastNameA = getLastName(a);
-            lastNameB = getLastName(b);
-            result = strcmp(lastNameA, lastNameB);
-            break;
-        case 4: // First name
-            firstNameA = getFirstName(a);
-            firstNameB = getFirstName(b);
-            result = strcmp(firstNameA, firstNameB);
-            break;
-        case 5: // GPA
-            result = getGPA(a) - getGPA(b);
-            break;
-        case 6: // TOEFL score (for international students)
-            if (areBothInternational(a, b))
-            {
-                result = getTOEFL(a) - getTOEFL(b);
-            }
-            break;
-        case 7: // Type (Domestic vs International)
-            result = isDomestic(a) ? -1 : 1;
-            break;
-        }
-
-        if (result != 0)
-            return result; // If the current attribute is enough to determine the order, return the result
+        if (a->student.international.toefl != b->student.international.toefl)
+            return a->student.international.toefl - b->student.international.toefl;
     }
+
+    // Domestic students come before international students
+    if (a->type != b->type)
+        return (a->type == DOMESTIC) ? -1 : 1;
 
     return 0; // If all else is equal, consider them equivalent
 }
-
 
 // Function to read students from a file and create a linked list
 StudentNode *readStudentsFromFile(const char *filename)
@@ -243,15 +170,16 @@ StudentNode *readStudentsFromFile(const char *filename)
         int day, year;
         char month[4];
         int toefl = -1;
-        float gpa;
+        char gpaStr[10];
         char typeChar;
         StudentType type;
 
-        // Parse the line
-        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %f %c %d",
-                             firstName, lastName, month, &day, &year, &gpa, &typeChar, &toefl);
+        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %9s %c %d",
+                            firstName, lastName, month, &day, &year, gpaStr, &typeChar, &toefl);
 
-        type = (typeChar == 'D') ? DOMESTIC : INTERNATIONAL;
+        // Convert typeChar to StudentType
+        type = (typeChar == 'D') ? DOMESTIC : (typeChar == 'I') ? INTERNATIONAL : -1;
+
 
         // Check if Student has correct number of fields (more than 6)
         if (scanned < 7)
@@ -269,6 +197,7 @@ StudentNode *readStudentsFromFile(const char *filename)
         }
 
         // Check is GPA is a valid value
+        float gpa = atof(gpaStr); // Convert GPA string to float
         if (gpa < 0.0 || gpa > 4.30001)
         {
             handleError("Error: GPA out of valid range (0.0 to 4.3)");
@@ -318,7 +247,7 @@ StudentNode *readStudentsFromFile(const char *filename)
             newNode->type = DOMESTIC;
             strcpy(newNode->student.domestic.firstName, firstName);
             strcpy(newNode->student.domestic.lastName, lastName);
-            newNode->student.domestic.gpa = gpa;
+            strcpy(newNode->student.domestic.gpaStr, gpaStr); // Copy GPA string
             newNode->student.domestic.day = day;
             strcpy(newNode->student.domestic.month, month);
             newNode->student.domestic.year = year;
@@ -329,7 +258,7 @@ StudentNode *readStudentsFromFile(const char *filename)
             newNode->type = INTERNATIONAL;
             strcpy(newNode->student.international.firstName, firstName);
             strcpy(newNode->student.international.lastName, lastName);
-            newNode->student.international.gpa = gpa;
+            strcpy(newNode->student.international.gpaStr, gpaStr); // Copy GPA string
             newNode->student.international.toefl = toefl;
             newNode->student.international.day = day;
             strcpy(newNode->student.international.month, month);
@@ -360,7 +289,63 @@ StudentNode *readStudentsFromFile(const char *filename)
     return head;
 }
 
-StudentNode *mergeSort(StudentNode *head, int (*comparator)(StudentNode *, StudentNode *));
+// Function to find the middle of the linked list
+StudentNode *findMiddle(StudentNode *head) {
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+
+    StudentNode *slow = head;
+    StudentNode *fast = head->next;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow;
+}
+
+// Function to merge two sorted linked lists
+StudentNode *mergeLists(StudentNode *a, StudentNode *b) {
+    if (a == NULL) {
+        return b;
+    }
+
+    if (b == NULL) {
+        return a;
+    }
+
+    if (compareStudents(a, b) <= 0) {
+        a->next = mergeLists(a->next, b);
+        return a;
+    } else {
+        b->next = mergeLists(a, b->next);
+        return b;
+    }
+}
+
+// Function to perform merge sort on a linked list
+void mergeSort(StudentNode **headRef) {
+    StudentNode *head = *headRef;
+    if (head == NULL || head->next == NULL) {
+        return;
+    }
+
+    // Find the middle of the list
+    StudentNode *mid = findMiddle(head);
+    StudentNode *midNext = mid->next;
+
+    // Split the list into two halves
+    mid->next = NULL;
+
+    // Recursively sort the two halves
+    mergeSort(&head);
+    mergeSort(&midNext);
+
+    // Merge the sorted halves
+    *headRef = mergeLists(head, midNext);
+}
 
 void writeStudentsToFile(const char *filename, StudentNode *students, char option)
 {
@@ -381,54 +366,83 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write only domestic students
             if (students->type == DOMESTIC)
             {
-                fprintf(file, "%s %s %s-%d-%d %.2f %c\n",
-                        students->student.domestic.firstName,
-                        students->student.domestic.lastName,
-                        students->student.domestic.month,
-                        students->student.domestic.day,
-                        students->student.domestic.year,
-                        students->student.domestic.gpa,
-                        students->student.domestic.status);
+            // Inside the 'D' case
+            char gpaString[20];
+            strcpy(gpaString, students->student.domestic.gpaStr);
+
+            fprintf(file, "%s %s %s-%d-%d %s %c\n",
+                    students->student.domestic.firstName,
+                    students->student.domestic.lastName,
+                    students->student.domestic.month,
+                    students->student.domestic.day,
+                    students->student.domestic.year,
+                    gpaString,
+                    students->student.domestic.status);
+
+            // Convert GPA string back to float
+            float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
+
         case 'I':
             // Write only international students
             if (students->type == INTERNATIONAL)
             {
-                fprintf(file, "%s %s %s-%d-%d %.2f %c %d\n",
-                        students->student.international.firstName,
-                        students->student.international.lastName,
-                        students->student.international.month,
-                        students->student.international.day,
-                        students->student.international.year,
-                        students->student.international.gpa,
-                        students->student.international.status,
-                        students->student.international.toefl);
+            // Inside the 'I' case
+            char gpaString[20];
+            strcpy(gpaString, students->student.international.gpaStr);
+
+            fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
+                    students->student.international.firstName,
+                    students->student.international.lastName,
+                    students->student.international.month,
+                    students->student.international.day,
+                    students->student.international.year,
+                    gpaString,
+                    students->student.international.status,
+                    students->student.international.toefl);
+
+            // Convert GPA string back to float
+            float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
         case 'A':
             // Write all students
             if (students->type == DOMESTIC)
             {
-                fprintf(file, "%s %s %s-%d-%d %.2f %c\n",
-                        students->student.domestic.firstName,
-                        students->student.domestic.lastName,
-                        students->student.domestic.month,
-                        students->student.domestic.day,
-                        students->student.domestic.year,
-                        students->student.domestic.gpa,
-                        students->student.domestic.status);
+            // Inside the 'D' case
+            char gpaString[20];
+            strcpy(gpaString, students->student.domestic.gpaStr);
+
+            fprintf(file, "%s %s %s-%d-%d %s %c\n",
+                    students->student.domestic.firstName,
+                    students->student.domestic.lastName,
+                    students->student.domestic.month,
+                    students->student.domestic.day,
+                    students->student.domestic.year,
+                    gpaString,
+                    students->student.domestic.status);
+
+            // Convert GPA string back to float
+            float gpa = atof(gpaString); // Use atof to convert string to float
             } else if (students->type == INTERNATIONAL)
             {
-                fprintf(file, "%s %s %s-%d-%d %.2f %c %d\n",
-                        students->student.international.firstName,
-                        students->student.international.lastName,
-                        students->student.international.month,
-                        students->student.international.day,
-                        students->student.international.year,
-                        students->student.international.gpa,
-                        students->student.international.status,
-                        students->student.international.toefl);
+              // Inside the 'I' case
+              char gpaString[20];
+              strcpy(gpaString, students->student.international.gpaStr);
+
+              fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
+                      students->student.international.firstName,
+                      students->student.international.lastName,
+                      students->student.international.month,
+                      students->student.international.day,
+                      students->student.international.year,
+                      gpaString,
+                      students->student.international.status,
+                      students->student.international.toefl);
+
+              // Convert GPA string back to float
+              float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
         default:
@@ -467,6 +481,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    // Sort the students using merge sort
+    mergeSort(&students);
+
     // Write students to the output file based on the specified option
     switch (option)
     {
@@ -493,8 +510,6 @@ int main(int argc, char *argv[])
         free(temp);
     }
 
-    return EXIT_SUCCESS;
-
     char *ANum = "A00874466_A01174802_A01357980";
     FILE *outputFile = fopen(ANum, "w");
     if (outputFile == NULL)
@@ -503,6 +518,6 @@ int main(int argc, char *argv[])
         return 1;
     }
     fclose(outputFile);
+
+    return EXIT_SUCCESS;
 }
-
-
