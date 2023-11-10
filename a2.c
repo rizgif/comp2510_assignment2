@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef enum
 {
@@ -190,7 +191,7 @@ StudentNode *readStudentsFromFile(const char *filename)
         }
 
         // Check is GPA is a valid value
-        if (gpa < 0.0 || gpa > 4.3)
+        if (gpa < 0.0 || gpa > 4.30001)
         {
             handleError("Error: GPA out of valid range (0.0 to 4.3)");
             continue;
@@ -302,7 +303,7 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write only domestic students
             if (students->type == DOMESTIC)
             {
-                fprintf(file, "%s %s %s %d %d %.2f %c\n",
+                fprintf(file, "%s %s %s-%d-%d %.2f %c\n",
                         students->student.domestic.firstName,
                         students->student.domestic.lastName,
                         students->student.domestic.month,
@@ -316,7 +317,7 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write only international students
             if (students->type == INTERNATIONAL)
             {
-                fprintf(file, "%s %s %s %d %d %.2f %c %d\n",
+                fprintf(file, "%s %s %s-%d-%d %.2f %c %d\n",
                         students->student.international.firstName,
                         students->student.international.lastName,
                         students->student.international.month,
@@ -331,7 +332,7 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write all students
             if (students->type == DOMESTIC)
             {
-                fprintf(file, "%s %s %s %d %d %.2f %c\n",
+                fprintf(file, "%s %s %s-%d-%d %.2f %c\n",
                         students->student.domestic.firstName,
                         students->student.domestic.lastName,
                         students->student.domestic.month,
@@ -341,7 +342,7 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
                         students->student.domestic.status);
             } else if (students->type == INTERNATIONAL)
             {
-                fprintf(file, "%s %s %s %d %d %.2f %c %d\n",
+                fprintf(file, "%s %s %s-%d-%d %.2f %c %d\n",
                         students->student.international.firstName,
                         students->student.international.lastName,
                         students->student.international.month,

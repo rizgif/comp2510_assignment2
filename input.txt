@@ -6,4 +6,5 @@ Amary Ajackson Feb-2-1990 4.0 I 60
 Mary Jackson Feb-2-1990 4.2 I 60
 Mary Jackson Feb-2-1990 4.2 I 70
 Mary Jackson Feb-2-1990 4.2 D
-Valid GPA Feb-2-1990 4.3 I 70 
+Valid GPA Feb-2-1990 4.30 I 70 
+Valid YEAR Feb-2-1950 4.30 I 70
