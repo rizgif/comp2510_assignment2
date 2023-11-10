@@ -31,7 +31,6 @@ typedef struct InternationalStudent
     int toefl;
 } InternationalStudent;
 
-
 // Structure to represent a node in a linked list of students.
 typedef struct StudentNode
 {
@@ -136,7 +135,6 @@ int compareStudents(const StudentNode *a, const StudentNode *b)
     if (gpaA != gpaB)
         return (gpaA > gpaB) ? -1 : 1;
 
-
     // Compare TOEFL scores, highest comes first
     if (a->type == INTERNATIONAL && b->type == INTERNATIONAL)
     {
@@ -174,17 +172,25 @@ StudentNode *readStudentsFromFile(const char *filename)
         char typeChar;
         StudentType type;
         int endPosition = 0;
+        int scanned, tokenCount = 0;
+        char *token, buffer[200];
+        char extraChar;
 
+        strcpy(buffer, line);
+        token = strtok(buffer, " \t\n");
+        while (token != NULL)
+        {
+            tokenCount++;
+            token = strtok(NULL, " \t\n");
+        }
 
         // Parse the line
-        int scanned = sscanf(line, "%49s %49s %3s-%d-%d %9s %c %d",
-        firstName, lastName, month, &day, &year, gpaStr, &typeChar, &toefl);
+        scanned = sscanf(line, "%49s %49s %3s-%d-%d %9s %c %d %c",
+                         firstName, lastName, month, &day, &year, gpaStr, &typeChar, &toefl, &extraChar);
 
         // Convert typeChar to StudentType
-        type = (typeChar == 'D') ? DOMESTIC : (typeChar == 'I') ? INTERNATIONAL : -1;
-        
-    
-
+        type = (typeChar == 'D') ? DOMESTIC : (typeChar == 'I') ? INTERNATIONAL
+                                                                : -1;
 
         // Check if Student has correct number of fields (more than 6)
         if (scanned < 7)
@@ -223,17 +229,17 @@ StudentNode *readStudentsFromFile(const char *filename)
             continue;
         }
 
-        // Check if the number of fields is correct for domestic student
-        if (type == DOMESTIC && scanned != 7)
+        // Check if extra characters are present after expected fields
+        if (scanned > 7 + (type == INTERNATIONAL ? 1 : 0) || scanned == EOF)
         {
-            handleError("Error: Incorrect record for domestic student");
+            handleError("Error: Student record format is incorrect");
             continue;
         }
 
-        // Check if the number of fields is correct for international student
-        if (type == INTERNATIONAL && scanned != 8)
+        // Check if extra characters are present after expected fields
+        if (scanned > 8 + (type == INTERNATIONAL ? 1 : 0) || scanned == EOF)
         {
-            handleError("Error: Incorrect record for international student");
+            handleError("Error: Student record format is incorrect");
             continue;
         }
 
@@ -295,15 +301,18 @@ StudentNode *readStudentsFromFile(const char *filename)
 }
 
 // Function to find the middle of the linked list
-StudentNode *findMiddle(StudentNode *head) {
-    if (head == NULL || head->next == NULL) {
+StudentNode *findMiddle(StudentNode *head)
+{
+    if (head == NULL || head->next == NULL)
+    {
         return head;
     }
 
     StudentNode *slow = head;
     StudentNode *fast = head->next;
 
-    while (fast != NULL && fast->next != NULL) {
+    while (fast != NULL && fast->next != NULL)
+    {
         slow = slow->next;
         fast = fast->next->next;
     }
@@ -312,28 +321,36 @@ StudentNode *findMiddle(StudentNode *head) {
 }
 
 // Function to merge two sorted linked lists
-StudentNode *mergeLists(StudentNode *a, StudentNode *b) {
-    if (a == NULL) {
+StudentNode *mergeLists(StudentNode *a, StudentNode *b)
+{
+    if (a == NULL)
+    {
         return b;
     }
 
-    if (b == NULL) {
+    if (b == NULL)
+    {
         return a;
     }
 
-    if (compareStudents(a, b) <= 0) {
+    if (compareStudents(a, b) <= 0)
+    {
         a->next = mergeLists(a->next, b);
         return a;
-    } else {
+    }
+    else
+    {
         b->next = mergeLists(a, b->next);
         return b;
     }
 }
 
 // Function to perform merge sort on a linked list
-void mergeSort(StudentNode **headRef) {
+void mergeSort(StudentNode **headRef)
+{
     StudentNode *head = *headRef;
-    if (head == NULL || head->next == NULL) {
+    if (head == NULL || head->next == NULL)
+    {
         return;
     }
 
@@ -371,21 +388,21 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write only domestic students
             if (students->type == DOMESTIC)
             {
-            // Inside the 'D' case
-            char gpaString[20];
-            strcpy(gpaString, students->student.domestic.gpaStr);
+                // Inside the 'D' case
+                char gpaString[20];
+                strcpy(gpaString, students->student.domestic.gpaStr);
 
-            fprintf(file, "%s %s %s-%d-%d %s %c\n",
-                    students->student.domestic.firstName,
-                    students->student.domestic.lastName,
-                    students->student.domestic.month,
-                    students->student.domestic.day,
-                    students->student.domestic.year,
-                    gpaString,
-                    students->student.domestic.status);
+                fprintf(file, "%s %s %s-%d-%d %s %c\n",
+                        students->student.domestic.firstName,
+                        students->student.domestic.lastName,
+                        students->student.domestic.month,
+                        students->student.domestic.day,
+                        students->student.domestic.year,
+                        gpaString,
+                        students->student.domestic.status);
 
-            // Convert GPA string back to float
-            float gpa = atof(gpaString); // Use atof to convert string to float
+                // Convert GPA string back to float
+                float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
 
@@ -393,61 +410,62 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
             // Write only international students
             if (students->type == INTERNATIONAL)
             {
-            // Inside the 'I' case
-            char gpaString[20];
-            strcpy(gpaString, students->student.international.gpaStr);
+                // Inside the 'I' case
+                char gpaString[20];
+                strcpy(gpaString, students->student.international.gpaStr);
 
-            fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
-                    students->student.international.firstName,
-                    students->student.international.lastName,
-                    students->student.international.month,
-                    students->student.international.day,
-                    students->student.international.year,
-                    gpaString,
-                    students->student.international.status,
-                    students->student.international.toefl);
+                fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
+                        students->student.international.firstName,
+                        students->student.international.lastName,
+                        students->student.international.month,
+                        students->student.international.day,
+                        students->student.international.year,
+                        gpaString,
+                        students->student.international.status,
+                        students->student.international.toefl);
 
-            // Convert GPA string back to float
-            float gpa = atof(gpaString); // Use atof to convert string to float
+                // Convert GPA string back to float
+                float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
         case 'A':
             // Write all students
             if (students->type == DOMESTIC)
             {
-            // Inside the 'D' case
-            char gpaString[20];
-            strcpy(gpaString, students->student.domestic.gpaStr);
+                // Inside the 'D' case
+                char gpaString[20];
+                strcpy(gpaString, students->student.domestic.gpaStr);
 
-            fprintf(file, "%s %s %s-%d-%d %s %c\n",
-                    students->student.domestic.firstName,
-                    students->student.domestic.lastName,
-                    students->student.domestic.month,
-                    students->student.domestic.day,
-                    students->student.domestic.year,
-                    gpaString,
-                    students->student.domestic.status);
+                fprintf(file, "%s %s %s-%d-%d %s %c\n",
+                        students->student.domestic.firstName,
+                        students->student.domestic.lastName,
+                        students->student.domestic.month,
+                        students->student.domestic.day,
+                        students->student.domestic.year,
+                        gpaString,
+                        students->student.domestic.status);
 
-            // Convert GPA string back to float
-            float gpa = atof(gpaString); // Use atof to convert string to float
-            } else if (students->type == INTERNATIONAL)
+                // Convert GPA string back to float
+                float gpa = atof(gpaString); // Use atof to convert string to float
+            }
+            else if (students->type == INTERNATIONAL)
             {
-              // Inside the 'I' case
-              char gpaString[20];
-              strcpy(gpaString, students->student.international.gpaStr);
+                // Inside the 'I' case
+                char gpaString[20];
+                strcpy(gpaString, students->student.international.gpaStr);
 
-              fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
-                      students->student.international.firstName,
-                      students->student.international.lastName,
-                      students->student.international.month,
-                      students->student.international.day,
-                      students->student.international.year,
-                      gpaString,
-                      students->student.international.status,
-                      students->student.international.toefl);
+                fprintf(file, "%s %s %s-%d-%d %s %c %d\n",
+                        students->student.international.firstName,
+                        students->student.international.lastName,
+                        students->student.international.month,
+                        students->student.international.day,
+                        students->student.international.year,
+                        gpaString,
+                        students->student.international.status,
+                        students->student.international.toefl);
 
-              // Convert GPA string back to float
-              float gpa = atof(gpaString); // Use atof to convert string to float
+                // Convert GPA string back to float
+                float gpa = atof(gpaString); // Use atof to convert string to float
             }
             break;
         default:
@@ -461,7 +479,6 @@ void writeStudentsToFile(const char *filename, StudentNode *students, char optio
 
     fclose(file);
 }
-
 
 int main(int argc, char *argv[])
 {
