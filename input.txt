@@ -1,1 +1,96 @@
-Mary Jackson Feb-2-1990 4.0 I 60Jack He Feb-3-1990 2.45 DMike Johnson Sep-2-1980 3.125 DJane Zhang Mar-2-1970 3.8 I 120
+John Doe Jan-15-1990 3.5 D
+Maria Garcia Feb-10-1991 3.7 I 100
+Alice Johnson Mar-22-1989 3.9 D
+Luis Rodriguez Apr-5-1992 3.2 I 95
+Charlie Davis May-16-1988 3.6 D
+Ana Martinez Jun-30-1993 3.8 I 88
+Ethan Garcia Jul-19-1990 3.1 D
+Yuri Ivanov Aug-25-1991 3.4 I 102
+George Ives Sep-12-1989 3.5 D
+Elena Petrova Oct-3-1992 3.7 I 110
+Ian Kelly Nov-21-1988 3.9 D
+Chen Wang Dec-14-1993 3.2 I 105
+Kevin Moore Jan-7-1990 3.6 D
+Min Kim Feb-18-1991 3.8 I 98
+Michael O'Donnell Mar-29-1989 3.1 D
+Sofia Silva Apr-10-1992 3.4 I 93
+Natalie Perez May-23-1988 3.5 D
+Lucas Bernard Jun-6-1993 3.7 I 96
+Oliver Quinn Jul-17-1990 3.9 D
+Nadia Reznik Aug-28-1991 3.2 I 99
+Steven Underwood Sep-9-1989 3.6 D
+Akira Takahashi Oct-20-1992 3.8 I 94
+Ulysses Ward Nov-1-1988 3.1 D
+Fatima Zahra Dec-12-1993 3.4 I 97
+William Young Jan-24-1990 3.5 D
+Ling Mei Feb-15-1991 3.7 I 108
+Yolanda Adams Mar-8-1989 3.9 D
+Carlos Espinoza Apr-21-1992 3.2 I 101
+Amanda Cook May-30-1988 3.6 D
+Olga Kurylenko Jun-13-1993 3.8 I 107
+Catherine Foster Jul-26-1990 3.1 D
+Raj Patel Aug-7-1991 3.4 I 104
+Daniel Green Sep-20-1989 3.5 D
+Aisha Al-Farsi Oct-31-1992 3.7 I 112
+Elaine Hughes Nov-19-1988 3.9 D
+Hiroshi Tanaka Dec-25-1993 3.2 I 106
+Franklin Irving Jan-16-1990 3.6 D
+Isabella Rossi Feb-27-1991 3.8 I 103
+Gloria Kim Mar-10-1989 3.1 D
+Jorge Mendez Apr-22-1992 3.4 I 109
+Henry Lawson May-19-1988 3.5 D
+Anastasia Smirnov Jun-30-1993 3.7 I 111
+Isabel Medina Jul-11-1990 3.9 D
+Daiki Sato Aug-22-1991 3.2 I 115
+Jacob Newman Sep-3-1989 3.6 D
+Lena Schultz Oct-16-1992 3.8 I 117
+Kathleen Ortiz Nov-27-1988 3.1 D
+Mohammed Al-Hamadi Dec-8-1993 3.4 I 113
+Luis Parker Jan-19-1990 3.5 D
+Yasmin Amari Feb-20-1991 3.7 I 116
+Monica Quinn Mar-31-1989 3.9 D
+Kenji Fujimoto Apr-12-1992 3.2 I 114
+Nicholas Ramirez May-23-1988 3.6 D
+Olga Morozova Jun-14-1993 3.8 I 118
+Olivia Sanchez Jul-25-1990 3.1 D
+Pablo Herrero Aug-6-1991 3.4 I 119
+Paul Torres Sep-17-1989 3.5 D
+Rania El-Ghazali Oct-28-1992 3.7 I 120
+Quinn Underhill Nov-9-1988 3.9 D
+Sho Tanaka Dec-20-1993 3.2 I 103
+Rebecca Vaughn Jan-11-1990 3.6 D
+Tatiana Rostova Feb-22-1991 3.8 I 105
+Samuel Watson Mar-5-1989 3.1 D
+Diego Sanchez Apr-16-1992 3.4 I 102
+Tiffany Xu May-27-1988 3.5 D
+Hana Yoon Jun-8-1993 3.7 I 108
+Umar Yasin Jul-19-1990 3.9 D
+Leila Khaled Aug-30-1991 3.2 I 110
+Vanessa Zimmerman Sep-11-1989 3.6 D
+Takeshi Kobayashi Oct-24-1992 3.8 I 107
+Walter Aiken Nov-5-1988 3.1 D
+Noura Al-Sayed Dec-16-1993 3.4 I 109
+Xenia Barlow Jan-27-1990 3.5 D
+Sergei Volkov Feb-8-1991 3.7 I 106
+Yusuf Calderon Mar-19-1989 3.9 D
+Larissa Costa Apr-30-1992 3.2 I 104
+Zoe Dalton May-11-1988 3.6 D
+Kazuo Nakamura Jun-24-1993 3.8 I 111
+Andrew Erickson Jul-15-1990 3.1 D
+Amira Hussein Aug-26-1991 3.4 I 112
+Brianna Fletcher Sep-7-1989 3.5 D
+Javier Fernandez Oct-18-1992 3.7 I 103
+Carlos Guerrero Nov-29-1988 3.9 D
+Svetlana Ivanova Dec-10-1993 3.2 I 114
+Daisy Huang Jan-3-1990 3.6 D
+Riko Nakashima Feb-14-1991 3.8 I 115
+Eduardo Ingram Mar-27-1989 3.1 D
+Layla Abadi Apr-8-1992 3.4 I 117
+Faith Jensen May-19-1988 3.5 D
+Miguel Torres Jun-30-1993 3.7 I 116
+Gabriel Kent Jul-11-1990 3.9 D
+Nina Kuznetsova Aug-22-1991 3.2 I 118
+Heidi Lambert Sep-3-1989 3.6 D
+Yuto Taniguchi Oct-16-1992 3.8 I 119
+Ivan Mitchell Nov-27-1988 3.1 D
+Zahra Mahmoud Dec-8-1993 3.4 I 120
